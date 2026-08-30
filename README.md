@@ -73,9 +73,22 @@ Scripts load `.env` automatically via `config.py`. You can still override with `
 
 ### GitHub Pages
 
-1. **Settings → Pages → Build and deployment → Source**: Deploy from branch
-2. **Branch**: `main`, folder: `/site`
-3. The workflows copy results/predictions JSON into `site/data/` on each run
+GitHub's "Deploy from a branch" dropdown only offers `/` or `/docs` — not `/site`. This project uses a **GitHub Actions** workflow instead (`.github/workflows/deploy_pages.yml`).
+
+1. **Settings → Pages → Build and deployment → Source**: select **GitHub Actions** (not "Deploy from a branch")
+2. Push the repo — the **Deploy GitHub Pages** workflow runs when `site/` changes
+3. Or trigger manually: **Actions → Deploy GitHub Pages → Run workflow**
+
+Site URL: `https://YOUR_USERNAME.github.io/nfl-betting/`
+
+Before the first deploy, sync dashboard data locally and push:
+
+```bash
+python scripts/sync_site_data.py
+git add site/data predictions/
+git commit -m "Sync dashboard data"
+git push
+```
 
 ## Model
 
