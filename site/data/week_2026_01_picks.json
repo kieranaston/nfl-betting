@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "week": 1,
-  "generated_at": "2026-08-30T17:02:16.164498+00:00",
+  "generated_at": "2026-08-30T17:22:15.693741+00:00",
   "min_ev": 0.04,
   "picks": [
     {
@@ -13,15 +13,18 @@
       "line": 2.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/green-bay-packers-%40-minnesota-vikings-35610171",
       "model_mu": 4.14,
       "p_over": 0.7441,
       "p_under": 0.2559,
       "over_price": 122,
       "over_book": "fanduel",
       "over_book_title": "FanDuel",
+      "over_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603819163&selectionId=40913497",
       "under_price": -162,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603819163&selectionId=40913496",
       "num_books": 1,
       "books": [
         "FanDuel"
@@ -41,7 +44,8 @@
       "edge": 0.2937,
       "price": 122,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603819163&selectionId=40913497"
     },
     {
       "player": "DeVonta Smith",
@@ -52,15 +56,18 @@
       "line": 5.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/washington-commanders-%40-philadelphia-eagles-35609293",
       "model_mu": 3.23,
       "p_over": 0.128,
       "p_under": 0.872,
       "over_price": 112,
       "over_book": "betrivers",
       "over_book_title": "BetRivers",
+      "over_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027663021?coupon={pickType}|4317340410|{wagerAmount}",
       "under_price": -140,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603829842&selectionId=40878036",
       "num_books": 2,
       "books": [
         "BetRivers",
@@ -81,7 +88,8 @@
       "edge": 0.2886,
       "price": -140,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603829842&selectionId=40878036"
     },
     {
       "player": "Jaylen Waddle",
@@ -92,15 +100,18 @@
       "line": 4.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/denver-broncos-%40-kansas-city-chiefs-35601246",
       "model_mu": 3.33,
       "p_over": 0.2544,
       "p_under": 0.7456,
       "over_price": -114,
       "over_book": "fanduel",
       "over_book_title": "FanDuel",
+      "over_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603597716&selectionId=40877797",
       "under_price": -114,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603597716&selectionId=40877798",
       "num_books": 2,
       "books": [
         "BetRivers",
@@ -121,7 +132,8 @@
       "edge": 0.2129,
       "price": -114,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603597716&selectionId=40877798"
     },
     {
       "player": "Nico Collins",
@@ -132,15 +144,18 @@
       "line": 4.5,
       "line_book": "betrivers",
       "line_book_title": "BetRivers",
+      "line_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027663020",
       "model_mu": 3.97,
       "p_over": 0.3657,
       "p_under": 0.6343,
       "over_price": -148,
       "over_book": "betrivers",
       "over_book_title": "BetRivers",
+      "over_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027663020?coupon={pickType}|4315999232|{wagerAmount}",
       "under_price": 112,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603606153&selectionId=40916112",
       "num_books": 2,
       "books": [
         "BetRivers",
@@ -161,7 +176,8 @@
       "edge": 0.1626,
       "price": 112,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603606153&selectionId=40916112"
     },
     {
       "player": "CeeDee Lamb",
@@ -172,15 +188,18 @@
       "line": 6.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/dallas-cowboys-%40-new-york-giants-35596943",
       "model_mu": 4.68,
       "p_over": 0.2156,
       "p_under": 0.7844,
       "over_price": 116,
       "over_book": "fanduel",
       "over_book_title": "FanDuel",
+      "over_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.602806062&selectionId=35952241",
       "under_price": -154,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.602806062&selectionId=35952242",
       "num_books": 2,
       "books": [
         "BetRivers",
@@ -201,7 +220,8 @@
       "edge": 0.1781,
       "price": -154,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.602806062&selectionId=35952242"
     },
     {
       "player": "Rashid Shaheed",
@@ -212,15 +232,18 @@
       "line": 2.5,
       "line_book": "draftkings",
       "line_book_title": "DraftKings",
+      "line_link": "https://sportsbook.draftkings.com/event/34118042",
       "model_mu": 3.48,
       "p_over": 0.646,
       "p_under": 0.354,
       "over_price": -104,
       "over_book": "betrivers",
       "over_book_title": "BetRivers",
+      "over_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027663017?coupon={pickType}|4306063004|{wagerAmount}",
       "under_price": -118,
       "under_book": "betonlineag",
       "under_book_title": "BetOnline.ag",
+      "under_link": "https://sports.betonline.ag/sportsbook/football/nfl/game/491038088",
       "num_books": 5,
       "books": [
         "BetOnline.ag",
@@ -244,7 +267,8 @@
       "edge": 0.1362,
       "price": -104,
       "price_book": "betrivers",
-      "price_book_title": "BetRivers"
+      "price_book_title": "BetRivers",
+      "price_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027663017?coupon={pickType}|4306063004|{wagerAmount}"
     },
     {
       "player": "Romeo Doubs",
@@ -255,15 +279,18 @@
       "line": 3.5,
       "line_book": "draftkings",
       "line_book_title": "DraftKings",
+      "line_link": "https://sportsbook.draftkings.com/event/34118042",
       "model_mu": 3.99,
       "p_over": 0.5406,
       "p_under": 0.4594,
       "over_price": 132,
       "over_book": "draftkings",
       "over_book_title": "DraftKings",
+      "over_link": "https://sportsbook.draftkings.com/?outcomes=0QA334612012%232183146414_13L88808Q1730991375Q20",
       "under_price": -140,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.601196942&selectionId=42169657",
       "num_books": 5,
       "books": [
         "BetOnline.ag",
@@ -287,7 +314,8 @@
       "edge": 0.1096,
       "price": 132,
       "price_book": "draftkings",
-      "price_book_title": "DraftKings"
+      "price_book_title": "DraftKings",
+      "price_link": "https://sportsbook.draftkings.com/?outcomes=0QA334612012%232183146414_13L88808Q1730991375Q20"
     },
     {
       "player": "Hunter Henry",
@@ -298,15 +326,18 @@
       "line": 3.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/new-england-patriots-%40-seattle-seahawks-35607262",
       "model_mu": 3.79,
       "p_over": 0.5053,
       "p_under": 0.4947,
       "over_price": 144,
       "over_book": "fanduel",
       "over_book_title": "FanDuel",
+      "over_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.602381024&selectionId=11851338",
       "under_price": -189,
       "under_book": "betonlineag",
       "under_book_title": "BetOnline.ag",
+      "under_link": "https://sports.betonline.ag/sportsbook/football/nfl/game/491038088",
       "num_books": 3,
       "books": [
         "BetOnline.ag",
@@ -328,7 +359,8 @@
       "edge": 0.0955,
       "price": 144,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.602381024&selectionId=11851338"
     },
     {
       "player": "Courtland Sutton",
@@ -339,15 +371,18 @@
       "line": 4.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/denver-broncos-%40-kansas-city-chiefs-35601246",
       "model_mu": 5.19,
       "p_over": 0.5626,
       "p_under": 0.4374,
       "over_price": 118,
       "over_book": "fanduel",
       "over_book_title": "FanDuel",
+      "over_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603597905&selectionId=16490004",
       "under_price": -158,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603597905&selectionId=16490005",
       "num_books": 2,
       "books": [
         "BetRivers",
@@ -368,7 +403,8 @@
       "edge": 0.1038,
       "price": 118,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603597905&selectionId=16490004"
     },
     {
       "player": "Cooper Kupp",
@@ -379,15 +415,18 @@
       "line": 2.5,
       "line_book": "draftkings",
       "line_book_title": "DraftKings",
+      "line_link": "https://sportsbook.draftkings.com/event/34118042",
       "model_mu": 3.86,
       "p_over": 0.7066,
       "p_under": 0.2934,
       "over_price": -136,
       "over_book": "betrivers",
       "over_book_title": "BetRivers",
+      "over_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027663017?coupon={pickType}|4306086654|{wagerAmount}",
       "under_price": 115,
       "under_book": "draftkings",
       "under_book_title": "DraftKings",
+      "under_link": "https://sportsbook.draftkings.com/?outcomes=0QA334611870%232151924573_13L88808Q11045072483Q20",
       "num_books": 5,
       "books": [
         "BetOnline.ag",
@@ -411,7 +450,8 @@
       "edge": 0.1303,
       "price": -136,
       "price_book": "betrivers",
-      "price_book_title": "BetRivers"
+      "price_book_title": "BetRivers",
+      "price_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027663017?coupon={pickType}|4306086654|{wagerAmount}"
     },
     {
       "player": "Malik Nabers",
@@ -422,15 +462,18 @@
       "line": 4.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/dallas-cowboys-%40-new-york-giants-35596943",
       "model_mu": 4.42,
       "p_over": 0.4419,
       "p_under": 0.5581,
       "over_price": -157,
       "over_book": "betrivers",
       "over_book_title": "BetRivers",
+      "over_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027638967?coupon={pickType}|4312310978|{wagerAmount}",
       "under_price": 118,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.602810630&selectionId=42258643",
       "num_books": 2,
       "books": [
         "BetRivers",
@@ -451,7 +494,8 @@
       "edge": 0.0994,
       "price": 118,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.602810630&selectionId=42258643"
     },
     {
       "player": "Puka Nacua",
@@ -462,15 +506,18 @@
       "line": 7.5,
       "line_book": "draftkings",
       "line_book_title": "DraftKings",
+      "line_link": "https://sportsbook.draftkings.com/event/34107951",
       "model_mu": 6.4,
       "p_over": 0.3255,
       "p_under": 0.6745,
       "over_price": 116,
       "over_book": "fanduel",
       "over_book_title": "FanDuel",
+      "over_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.601443992&selectionId=41887349",
       "under_price": -129,
       "under_book": "draftkings",
       "under_book_title": "DraftKings",
+      "under_link": "https://sportsbook.draftkings.com/?outcomes=0QA334322589%232151987452_13L88808Q1464456509Q20",
       "num_books": 4,
       "books": [
         "BetRivers",
@@ -493,7 +540,8 @@
       "edge": 0.1112,
       "price": -129,
       "price_book": "draftkings",
-      "price_book_title": "DraftKings"
+      "price_book_title": "DraftKings",
+      "price_link": "https://sportsbook.draftkings.com/?outcomes=0QA334322589%232151987452_13L88808Q1464456509Q20"
     },
     {
       "player": "Jaxon Smith-Njigba",
@@ -504,15 +552,18 @@
       "line": 6.5,
       "line_book": "draftkings",
       "line_book_title": "DraftKings",
+      "line_link": "https://sportsbook.draftkings.com/event/34118042",
       "model_mu": 5.78,
       "p_over": 0.3617,
       "p_under": 0.6383,
       "over_price": -102,
       "over_book": "fanduel",
       "over_book_title": "FanDuel",
+      "over_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.601196178&selectionId=41158865",
       "under_price": -116,
       "under_book": "draftkings",
       "under_book_title": "DraftKings",
+      "under_link": "https://sportsbook.draftkings.com/?outcomes=0QA334612306%232238797801_13L88808Q1-1523053588Q20",
       "num_books": 5,
       "books": [
         "BetOnline.ag",
@@ -536,7 +587,8 @@
       "edge": 0.1013,
       "price": -116,
       "price_book": "draftkings",
-      "price_book_title": "DraftKings"
+      "price_book_title": "DraftKings",
+      "price_link": "https://sportsbook.draftkings.com/?outcomes=0QA334612306%232238797801_13L88808Q1-1523053588Q20"
     },
     {
       "player": "DJ Moore",
@@ -547,15 +599,18 @@
       "line": 3.5,
       "line_book": "betrivers",
       "line_book_title": "BetRivers",
+      "line_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027663020",
       "model_mu": 2.9,
       "p_over": 0.3321,
       "p_under": 0.6679,
       "over_price": -102,
       "over_book": "fanduel",
       "over_book_title": "FanDuel",
+      "over_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603606156&selectionId=73370450",
       "under_price": -130,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603606156&selectionId=73370451",
       "num_books": 2,
       "books": [
         "BetRivers",
@@ -576,7 +631,8 @@
       "edge": 0.1027,
       "price": -130,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603606156&selectionId=73370451"
     },
     {
       "player": "George Pickens",
@@ -587,15 +643,18 @@
       "line": 5.0,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/dallas-cowboys-%40-new-york-giants-35596943",
       "model_mu": 4.24,
       "p_over": 0.2678,
       "p_under": 0.7322,
       "over_price": 124,
       "over_book": "fanduel",
       "over_book_title": "FanDuel",
+      "over_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.602809381&selectionId=42217164",
       "under_price": -166,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.602809381&selectionId=42217165",
       "num_books": 2,
       "books": [
         "BetRivers",
@@ -616,7 +675,8 @@
       "edge": 0.1081,
       "price": -166,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.602809381&selectionId=42217165"
     },
     {
       "player": "AJ Barner",
@@ -627,15 +687,18 @@
       "line": 2.5,
       "line_book": "draftkings",
       "line_book_title": "DraftKings",
+      "line_link": "https://sportsbook.draftkings.com/event/34118042",
       "model_mu": 3.66,
       "p_over": 0.6755,
       "p_under": 0.3245,
       "over_price": -145,
       "over_book": "betonlineag",
       "over_book_title": "BetOnline.ag",
+      "over_link": "https://sports.betonline.ag/sportsbook/football/nfl/game/491038088",
       "under_price": 115,
       "under_book": "draftkings",
       "under_book_title": "DraftKings",
+      "under_link": "https://sportsbook.draftkings.com/?outcomes=0QA334611478%232151922214_13L88808Q11045072483Q20",
       "num_books": 5,
       "books": [
         "BetOnline.ag",
@@ -659,7 +722,8 @@
       "edge": 0.0837,
       "price": -145,
       "price_book": "betonlineag",
-      "price_book_title": "BetOnline.ag"
+      "price_book_title": "BetOnline.ag",
+      "price_link": "https://sports.betonline.ag/sportsbook/football/nfl/game/491038088"
     },
     {
       "player": "Dallas Goedert",
@@ -670,15 +734,18 @@
       "line": 3.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/washington-commanders-%40-philadelphia-eagles-35609293",
       "model_mu": 4.03,
       "p_over": 0.5489,
       "p_under": 0.4511,
       "over_price": 102,
       "over_book": "betrivers",
       "over_book_title": "BetRivers",
+      "over_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027663021?coupon={pickType}|4317363569|{wagerAmount}",
       "under_price": -130,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603830079&selectionId=20501811",
       "num_books": 2,
       "books": [
         "BetRivers",
@@ -699,7 +766,8 @@
       "edge": 0.0538,
       "price": 102,
       "price_book": "betrivers",
-      "price_book_title": "BetRivers"
+      "price_book_title": "BetRivers",
+      "price_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027663021?coupon={pickType}|4317363569|{wagerAmount}"
     },
     {
       "player": "Tucker Kraft",
@@ -710,15 +778,18 @@
       "line": 3.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/green-bay-packers-%40-minnesota-vikings-35610171",
       "model_mu": 3.75,
       "p_over": 0.499,
       "p_under": 0.501,
       "over_price": -148,
       "over_book": "fanduel",
       "over_book_title": "FanDuel",
+      "over_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603819167&selectionId=60409170",
       "under_price": 112,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603819167&selectionId=60409164",
       "num_books": 1,
       "books": [
         "FanDuel"
@@ -738,7 +809,8 @@
       "edge": 0.0293,
       "price": 112,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603819167&selectionId=60409164"
     },
     {
       "player": "Christian Watson",
@@ -749,15 +821,18 @@
       "line": 3.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/green-bay-packers-%40-minnesota-vikings-35610171",
       "model_mu": 3.78,
       "p_over": 0.5045,
       "p_under": 0.4955,
       "over_price": -148,
       "over_book": "fanduel",
       "over_book_title": "FanDuel",
+      "over_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603819164&selectionId=48400051",
       "under_price": 112,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603819164&selectionId=48400052",
       "num_books": 1,
       "books": [
         "FanDuel"
@@ -777,7 +852,8 @@
       "edge": 0.0239,
       "price": 112,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603819164&selectionId=48400052"
     },
     {
       "player": "Xavier Worthy",
@@ -788,15 +864,18 @@
       "line": 3.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/denver-broncos-%40-kansas-city-chiefs-35601246",
       "model_mu": 3.68,
       "p_over": 0.4848,
       "p_under": 0.5152,
       "over_price": 116,
       "over_book": "fanduel",
       "over_book_title": "FanDuel",
+      "over_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603598362&selectionId=41066840",
       "under_price": -154,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603598362&selectionId=41066847",
       "num_books": 2,
       "books": [
         "BetRivers",
@@ -817,7 +896,8 @@
       "edge": 0.0219,
       "price": 116,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603598362&selectionId=41066840"
     },
     {
       "player": "Stefon Diggs",
@@ -828,15 +908,18 @@
       "line": 3.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/washington-commanders-%40-philadelphia-eagles-35609293",
       "model_mu": 3.8,
       "p_over": 0.5083,
       "p_under": 0.4917,
       "over_price": -139,
       "over_book": "betrivers",
       "over_book_title": "BetRivers",
+      "over_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027663021?coupon={pickType}|4317341137|{wagerAmount}",
       "under_price": 112,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603829844&selectionId=11890082",
       "num_books": 2,
       "books": [
         "BetRivers",
@@ -857,7 +940,8 @@
       "edge": 0.02,
       "price": 112,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603829844&selectionId=11890082"
     },
     {
       "player": "Rashee Rice",
@@ -868,15 +952,18 @@
       "line": 5.5,
       "line_book": "fanduel",
       "line_book_title": "FanDuel",
+      "line_link": "https://sportsbook.fanduel.com/american-football/nfl/denver-broncos-%40-kansas-city-chiefs-35601246",
       "model_mu": 5.52,
       "p_over": 0.4593,
       "p_under": 0.5407,
       "over_price": -118,
       "over_book": "betrivers",
       "over_book_title": "BetRivers",
+      "over_link": "https://{state}.betrivers.com/?page=sportsbook#event/1027663046?coupon={pickType}|4316072396|{wagerAmount}",
       "under_price": -108,
       "under_book": "fanduel",
       "under_book_title": "FanDuel",
+      "under_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603597774&selectionId=48551004",
       "num_books": 2,
       "books": [
         "BetRivers",
@@ -897,7 +984,8 @@
       "edge": 0.0215,
       "price": -108,
       "price_book": "fanduel",
-      "price_book_title": "FanDuel"
+      "price_book_title": "FanDuel",
+      "price_link": "https://sportsbook.fanduel.com/addToBetslip?marketId=42.603597774&selectionId=48551004"
     }
   ],
   "n_picks": 22,

@@ -53,13 +53,14 @@ def get_upcoming_events() -> list[dict[str, Any]]:
 
 
 def get_event_reception_props(event_id: str) -> dict[str, Any]:
-    """Fetch player_receptions odds for a single event."""
+    """Fetch player_receptions odds for a single event (includes book deep links when available)."""
     url = f"{ODDS_API_BASE}/sports/{ODDS_SPORT}/events/{event_id}/odds"
     params = {
         "apiKey": _api_key(),
         "regions": ODDS_REGIONS,
         "markets": ODDS_MARKET,
         "oddsFormat": "american",
+        "includeLinks": "true",
     }
     resp = requests.get(url, params=params, timeout=30)
     if resp.status_code == 429:
@@ -72,7 +73,7 @@ def get_event_reception_props(event_id: str) -> dict[str, Any]:
 def fetch_all_reception_props() -> list[dict[str, Any]]:
     """
     Pull player_receptions for all upcoming events.
-    Returns flat list of prop dicts with player, line, over/under prices, book, event info.
+    Returns flat list of prop dicts with player, line, over/under prices, book, links, event info.
     """
     events = get_upcoming_events()
     props: list[dict[str, Any]] = []
@@ -91,9 +92,11 @@ def fetch_all_reception_props() -> list[dict[str, Any]]:
         for bookmaker in odds_data.get("bookmakers", []):
             book_key = bookmaker["key"]
             book_title = bookmaker.get("title") or book_label(book_key)
+            event_link = bookmaker.get("link")
             for market in bookmaker.get("markets", []):
                 if market["key"] != ODDS_MARKET:
                     continue
+                market_link = market.get("link") or event_link
                 by_player: dict[str, dict] = {}
                 for outcome in market.get("outcomes", []):
                     player = outcome.get("description", "")
@@ -109,9 +112,12 @@ def fetch_all_reception_props() -> list[dict[str, Any]]:
                             "commence_time": commence,
                             "book": book_key,
                             "book_title": book_title,
+                            "event_link": event_link,
                             "line": outcome.get("point"),
                         }
                     by_player[player][f"{side}_price"] = outcome.get("price")
+                    # Prefer outcome betslip link, then market/event page
+                    by_player[player][f"{side}_link"] = outcome.get("link") or market_link
                     if outcome.get("point") is not None:
                         by_player[player]["line"] = outcome["point"]
 
@@ -125,7 +131,7 @@ def fetch_all_reception_props() -> list[dict[str, Any]]:
 def consensus_lines(props: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     """
     Aggregate props to consensus line per player (median line, best over/under prices).
-    Tracks which book offered the median line and the best prices.
+    Tracks which book offered the median line and the best prices, plus deep links.
     """
     from statistics import median
 
@@ -141,9 +147,13 @@ def consensus_lines(props: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
             continue
 
         line = median(r["line"] for r in lined)
-        # Prefer a book that posts exactly the median line
         line_matches = [r for r in lined if r["line"] == line]
         line_src = line_matches[0] if line_matches else lined[0]
+        # Prefer a line-book row that also has a useful link
+        for candidate in line_matches:
+            if candidate.get("over_link") or candidate.get("under_link") or candidate.get("event_link"):
+                line_src = candidate
+                break
 
         over_rows = [r for r in rows if r.get("over_price") is not None]
         under_rows = [r for r in rows if r.get("under_price") is not None]
@@ -155,12 +165,17 @@ def consensus_lines(props: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
             "line": line,
             "line_book": line_src.get("book"),
             "line_book_title": book_label(line_src.get("book"), line_src.get("book_title")),
+            "line_link": line_src.get("event_link")
+            or line_src.get("over_link")
+            or line_src.get("under_link"),
             "over_price": best_over["over_price"] if best_over else None,
             "over_book": best_over.get("book") if best_over else None,
             "over_book_title": book_label(best_over.get("book"), best_over.get("book_title")) if best_over else None,
+            "over_link": best_over.get("over_link") if best_over else None,
             "under_price": best_under["under_price"] if best_under else None,
             "under_book": best_under.get("book") if best_under else None,
             "under_book_title": book_label(best_under.get("book"), best_under.get("book_title")) if best_under else None,
+            "under_link": best_under.get("under_link") if best_under else None,
             "event_id": rows[0]["event_id"],
             "home_team": rows[0]["home_team"],
             "away_team": rows[0]["away_team"],

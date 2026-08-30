@@ -74,6 +74,13 @@ function renderSummary(s) {
   document.getElementById("avg-clv").textContent = avgClv;
 }
 
+function bookCell(label, href, title) {
+  const text = label || "—";
+  const titleAttr = title ? ` title="${title}"` : "";
+  if (!href) return `<td class="book-cell"${titleAttr}>${text}</td>`;
+  return `<td class="book-cell"${titleAttr}><a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a></td>`;
+}
+
 function renderPicks(data) {
   const tbody = document.getElementById("picks-body");
   const picks = data.picks || [];
@@ -106,9 +113,9 @@ function renderPicks(data) {
       const team = p.team ? `<span class="player-label-team">${p.team}</span>` : "";
       const lineBook = p.line_book_title || p.line_book || "—";
       const priceBook = p.price_book_title || p.price_book || "—";
-      const lineTitle =
+      const lineHint =
         p.num_books != null
-          ? `title="Median line across ${p.num_books} books; shown book posts this line"`
+          ? `Median line across ${p.num_books} books; shown book posts this line`
           : "";
       return `
     <tr>
@@ -120,12 +127,12 @@ function renderPicks(data) {
       </td>
       <td>${p.position}</td>
       <td class="num">${p.line}</td>
-      <td class="book-cell" ${lineTitle}>${lineBook}</td>
+      ${bookCell(lineBook, p.line_link, lineHint)}
       <td class="pick-${p.pick}">${p.pick.toUpperCase()}</td>
       <td class="num ${ev != null && ev >= 0 ? "ev-pos" : ""}">${fmtEV(ev)}</td>
       <td class="num">${p.model_mu}</td>
       <td class="num">${price}</td>
-      <td class="book-cell">${priceBook}</td>
+      ${bookCell(priceBook, p.price_link)}
       <td>${p.matchup || ""}</td>
     </tr>`;
     })

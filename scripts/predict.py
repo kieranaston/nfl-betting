@@ -136,12 +136,15 @@ def generate_picks(season: int, week: int, raw: dict | None = None) -> dict:
 
         price_book = None
         price_book_title = None
+        price_link = None
         if pick_side == "over":
             price_book = market.get("over_book")
             price_book_title = market.get("over_book_title")
+            price_link = market.get("over_link")
         elif pick_side == "under":
             price_book = market.get("under_book")
             price_book_title = market.get("under_book_title")
+            price_link = market.get("under_link")
 
         prop_record = {
             "player": player_name,
@@ -152,15 +155,18 @@ def generate_picks(season: int, week: int, raw: dict | None = None) -> dict:
             "line": line,
             "line_book": market.get("line_book"),
             "line_book_title": market.get("line_book_title"),
+            "line_link": market.get("line_link"),
             "model_mu": round(mu, 2),
             "p_over": round(p_over, 4),
             "p_under": round(p_under, 4),
             "over_price": over_price,
             "over_book": market.get("over_book"),
             "over_book_title": market.get("over_book_title"),
+            "over_link": market.get("over_link"),
             "under_price": under_price,
             "under_book": market.get("under_book"),
             "under_book_title": market.get("under_book_title"),
+            "under_link": market.get("under_link"),
             "num_books": market.get("num_books"),
             "books": market.get("books"),
             "team_spread": json_safe(row.get("team_spread")),
@@ -186,6 +192,7 @@ def generate_picks(season: int, week: int, raw: dict | None = None) -> dict:
                     "price": price,
                     "price_book": price_book,
                     "price_book_title": price_book_title,
+                    "price_link": price_link,
                 }
             )
 
