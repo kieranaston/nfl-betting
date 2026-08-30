@@ -27,8 +27,11 @@ async function init() {
 }
 
 async function findLatestPicks() {
-  // Try common week patterns — sync script copies recent files
-  for (const week of [5, 4, 3, 2, 1, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6]) {
+  const latest = await loadJSON(`${DATA}/latest_picks.json`);
+  if (latest) return latest;
+
+  // Fallback: scan recent weeks if latest_picks.json missing
+  for (const week of [22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]) {
     for (const season of [2025, 2024]) {
       const path = `${DATA}/week_${season}_${String(week).padStart(2, "0")}_picks.json`;
       const data = await loadJSON(path);

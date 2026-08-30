@@ -36,6 +36,8 @@ def sync() -> None:
     picks_files = sorted(PREDICTIONS_DIR.glob("week_*_picks.json"))
     for pf in picks_files[-4:]:  # keep last 4 weeks on dashboard
         shutil.copy(pf, dest / pf.name)
+    if picks_files:
+        shutil.copy(picks_files[-1], dest / "latest_picks.json")
 
     weekly_dir = RESULTS_DIR / "weekly"
     if weekly_dir.exists():
