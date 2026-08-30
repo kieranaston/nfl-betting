@@ -38,6 +38,33 @@ def pull_raw_data() -> dict[str, pd.DataFrame]:
     return {"stats": stats, "snaps": snaps, "schedules": schedules, "injuries": injuries}
 
 
+def load_cached_raw_data() -> dict[str, pd.DataFrame] | None:
+    """Load previously pulled CSVs if all are present; else None."""
+    paths = {
+        "stats": DATA_DIR / "player_stats.csv",
+        "snaps": DATA_DIR / "snap_counts.csv",
+        "schedules": DATA_DIR / "schedules.csv",
+        "injuries": DATA_DIR / "injuries.csv",
+    }
+    if not all(p.exists() for p in paths.values()):
+        return None
+    return {
+        "stats": pd.read_csv(paths["stats"], low_memory=False),
+        "snaps": pd.read_csv(paths["snaps"], low_memory=False),
+        "schedules": pd.read_csv(paths["schedules"], low_memory=False),
+        "injuries": pd.read_csv(paths["injuries"], low_memory=False),
+    }
+
+
+def load_raw_data(refresh: bool = False) -> dict[str, pd.DataFrame]:
+    """Return nflverse data; use local CSVs unless refresh=True or cache missing."""
+    if not refresh:
+        cached = load_cached_raw_data()
+        if cached is not None:
+            return cached
+    return pull_raw_data()
+
+
 def build_training_set(stats: pd.DataFrame, snaps: pd.DataFrame, schedules: pd.DataFrame) -> pd.DataFrame:
     training = prepare_training_frame(stats, snaps, schedules)
     training.to_csv(TRAINING_SET_FILE, index=False)

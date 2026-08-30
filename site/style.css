@@ -258,6 +258,13 @@ table.picks-table .num {
   font-weight: 500;
 }
 
+.book-cell {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 .pick-over {
   color: var(--success);
   font-weight: 600;

@@ -36,7 +36,7 @@ async function init() {
   else {
     document.getElementById("picks-meta").textContent = "No picks file found";
     document.getElementById("picks-body").innerHTML =
-      `<tr><td colspan="8" class="empty">No picks yet</td></tr>`;
+      `<tr><td colspan="10" class="empty">No picks yet</td></tr>`;
   }
 
   if (summary) renderCharts(summary);
@@ -95,7 +95,7 @@ function renderPicks(data) {
     .join(" · ");
 
   if (!picks.length) {
-    tbody.innerHTML = `<tr><td colspan="8" class="empty">No picks this week (no edge above threshold)</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" class="empty">No picks this week (no edge above threshold)</td></tr>`;
     return;
   }
 
@@ -104,6 +104,12 @@ function renderPicks(data) {
       const ev = p.ev ?? p.edge;
       const price = p.price > 0 ? `+${p.price}` : `${p.price}`;
       const team = p.team ? `<span class="player-label-team">${p.team}</span>` : "";
+      const lineBook = p.line_book_title || p.line_book || "—";
+      const priceBook = p.price_book_title || p.price_book || "—";
+      const lineTitle =
+        p.num_books != null
+          ? `title="Median line across ${p.num_books} books; shown book posts this line"`
+          : "";
       return `
     <tr>
       <td>
@@ -114,10 +120,12 @@ function renderPicks(data) {
       </td>
       <td>${p.position}</td>
       <td class="num">${p.line}</td>
+      <td class="book-cell" ${lineTitle}>${lineBook}</td>
       <td class="pick-${p.pick}">${p.pick.toUpperCase()}</td>
       <td class="num ${ev != null && ev >= 0 ? "ev-pos" : ""}">${fmtEV(ev)}</td>
       <td class="num">${p.model_mu}</td>
       <td class="num">${price}</td>
+      <td class="book-cell">${priceBook}</td>
       <td>${p.matchup || ""}</td>
     </tr>`;
     })

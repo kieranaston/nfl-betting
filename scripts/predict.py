@@ -19,7 +19,7 @@ from features import (
     nb_over_prob,
 )
 from odds_api import consensus_lines, fetch_all_reception_props
-from pull_data import pull_raw_data
+from pull_data import load_raw_data
 from train import load_model
 
 
@@ -97,13 +97,14 @@ def best_ev_side(p_over: float, p_under: float, over_price, under_price) -> tupl
     return best
 
 
-def generate_picks(season: int, week: int) -> dict:
+def generate_picks(season: int, week: int, raw: dict | None = None) -> dict:
     if not MODEL_FILE.exists():
         raise FileNotFoundError(f"No model at {MODEL_FILE}. Run train.py first.")
 
     model, alpha = load_model()
 
-    raw = pull_raw_data()
+    if raw is None:
+        raw = load_raw_data()
     features = latest_player_features(raw["stats"], raw["snaps"], raw["schedules"], season, week)
 
     props_raw = fetch_all_reception_props()
@@ -133,6 +134,15 @@ def generate_picks(season: int, week: int) -> dict:
             p_over, p_under, over_price, under_price
         )
 
+        price_book = None
+        price_book_title = None
+        if pick_side == "over":
+            price_book = market.get("over_book")
+            price_book_title = market.get("over_book_title")
+        elif pick_side == "under":
+            price_book = market.get("under_book")
+            price_book_title = market.get("under_book_title")
+
         prop_record = {
             "player": player_name,
             "player_id": row["player_id"],
@@ -140,11 +150,19 @@ def generate_picks(season: int, week: int) -> dict:
             "team": json_safe(row.get("team")) or "",
             "opponent": json_safe(row.get("opponent")) or "",
             "line": line,
+            "line_book": market.get("line_book"),
+            "line_book_title": market.get("line_book_title"),
             "model_mu": round(mu, 2),
             "p_over": round(p_over, 4),
             "p_under": round(p_under, 4),
             "over_price": over_price,
+            "over_book": market.get("over_book"),
+            "over_book_title": market.get("over_book_title"),
             "under_price": under_price,
+            "under_book": market.get("under_book"),
+            "under_book_title": market.get("under_book_title"),
+            "num_books": market.get("num_books"),
+            "books": market.get("books"),
             "team_spread": json_safe(row.get("team_spread")),
             "total_line": json_safe(row.get("total_line")),
             "opp_pass_funnel_rank": json_safe(row.get("opp_pass_funnel_rank")),
@@ -166,6 +184,8 @@ def generate_picks(season: int, week: int) -> dict:
                     "ev": round(ev, 4),
                     "edge": round(model_prob - market_prob, 4),
                     "price": price,
+                    "price_book": price_book,
+                    "price_book_title": price_book_title,
                 }
             )
 
@@ -199,9 +219,9 @@ def generate_picks(season: int, week: int) -> dict:
 
 
 def main() -> None:
-    raw = pull_raw_data()
+    raw = load_raw_data()
     season, week = current_nfl_week(raw["schedules"])
-    generate_picks(season, week)
+    generate_picks(season, week, raw=raw)
 
 
 if __name__ == "__main__":

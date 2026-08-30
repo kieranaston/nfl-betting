@@ -8,6 +8,34 @@ import requests
 
 from config import ODDS_API_BASE, ODDS_MARKET, ODDS_REGIONS, ODDS_SPORT
 
+# Display names for common bookmaker keys
+BOOK_TITLES = {
+    "draftkings": "DraftKings",
+    "fanduel": "FanDuel",
+    "betmgm": "BetMGM",
+    "caesars": "Caesars",
+    "pointsbetus": "PointsBet",
+    "betrivers": "BetRivers",
+    "williamhill_us": "Caesars",
+    "bovada": "Bovada",
+    "betonlineag": "BetOnline",
+    "mybookieag": "MyBookie",
+    "lowvig": "LowVig",
+    "betus": "BetUS",
+    "superbook": "SuperBook",
+    "wynnbet": "WynnBET",
+    "unibet_us": "Unibet",
+    "fanatics": "Fanatics",
+}
+
+
+def book_label(key: str | None, title: str | None = None) -> str:
+    if title:
+        return title
+    if not key:
+        return ""
+    return BOOK_TITLES.get(key, key.replace("_", " ").title())
+
 
 def _api_key() -> str:
     key = os.environ.get("ODDS_API_KEY", "")
@@ -62,10 +90,10 @@ def fetch_all_reception_props() -> list[dict[str, Any]]:
 
         for bookmaker in odds_data.get("bookmakers", []):
             book_key = bookmaker["key"]
+            book_title = bookmaker.get("title") or book_label(book_key)
             for market in bookmaker.get("markets", []):
                 if market["key"] != ODDS_MARKET:
                     continue
-                # Group outcomes by player (description field)
                 by_player: dict[str, dict] = {}
                 for outcome in market.get("outcomes", []):
                     player = outcome.get("description", "")
@@ -80,6 +108,7 @@ def fetch_all_reception_props() -> list[dict[str, Any]]:
                             "away_team": away,
                             "commence_time": commence,
                             "book": book_key,
+                            "book_title": book_title,
                             "line": outcome.get("point"),
                         }
                     by_player[player][f"{side}_price"] = outcome.get("price")
@@ -88,7 +117,7 @@ def fetch_all_reception_props() -> list[dict[str, Any]]:
 
                 props.extend(by_player.values())
 
-        time.sleep(0.3)  # gentle rate limit
+        time.sleep(0.3)
 
     return props
 
@@ -96,7 +125,7 @@ def fetch_all_reception_props() -> list[dict[str, Any]]:
 def consensus_lines(props: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     """
     Aggregate props to consensus line per player (median line, best over/under prices).
-    Key = lowercase player name.
+    Tracks which book offered the median line and the best prices.
     """
     from statistics import median
 
@@ -107,21 +136,36 @@ def consensus_lines(props: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
 
     consensus: dict[str, dict[str, Any]] = {}
     for key, rows in by_player.items():
-        lines = [r["line"] for r in rows if r.get("line") is not None]
-        if not lines:
+        lined = [r for r in rows if r.get("line") is not None]
+        if not lined:
             continue
-        line = median(lines)
-        overs = [r["over_price"] for r in rows if r.get("over_price") is not None]
-        unders = [r["under_price"] for r in rows if r.get("under_price") is not None]
+
+        line = median(r["line"] for r in lined)
+        # Prefer a book that posts exactly the median line
+        line_matches = [r for r in lined if r["line"] == line]
+        line_src = line_matches[0] if line_matches else lined[0]
+
+        over_rows = [r for r in rows if r.get("over_price") is not None]
+        under_rows = [r for r in rows if r.get("under_price") is not None]
+        best_over = max(over_rows, key=lambda r: r["over_price"]) if over_rows else None
+        best_under = max(under_rows, key=lambda r: r["under_price"]) if under_rows else None
+
         consensus[key] = {
             "player": rows[0]["player"],
             "line": line,
-            "over_price": max(overs) if overs else None,
-            "under_price": max(unders) if unders else None,
+            "line_book": line_src.get("book"),
+            "line_book_title": book_label(line_src.get("book"), line_src.get("book_title")),
+            "over_price": best_over["over_price"] if best_over else None,
+            "over_book": best_over.get("book") if best_over else None,
+            "over_book_title": book_label(best_over.get("book"), best_over.get("book_title")) if best_over else None,
+            "under_price": best_under["under_price"] if best_under else None,
+            "under_book": best_under.get("book") if best_under else None,
+            "under_book_title": book_label(best_under.get("book"), best_under.get("book_title")) if best_under else None,
             "event_id": rows[0]["event_id"],
             "home_team": rows[0]["home_team"],
             "away_team": rows[0]["away_team"],
             "commence_time": rows[0]["commence_time"],
-            "num_books": len(rows),
+            "num_books": len({r.get("book") for r in rows if r.get("book")}),
+            "books": sorted({book_label(r.get("book"), r.get("book_title")) for r in rows if r.get("book")}),
         }
     return consensus
