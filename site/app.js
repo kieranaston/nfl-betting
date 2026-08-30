@@ -1,5 +1,11 @@
 const DATA = "data";
 
+const CHART_MUTED = "#6b7280";
+const CHART_GRID = "#e5e7eb";
+const CHART_ACCENT = "#2563eb";
+const CHART_SUCCESS = "#059669";
+const CHART_DANGER = "#dc2626";
+
 async function loadJSON(path) {
   const res = await fetch(path);
   if (!res.ok) return null;
@@ -11,7 +17,7 @@ function fmtPct(v) {
   return (v * 100).toFixed(1) + "%";
 }
 
-function fmtEdge(v) {
+function fmtEV(v) {
   if (v == null) return "—";
   return (v * 100).toFixed(1) + "%";
 }
@@ -20,8 +26,13 @@ async function init() {
   const summary = await loadJSON(`${DATA}/summary.json`);
   if (summary) renderSummary(summary);
 
-  const picksFiles = await findLatestPicks();
-  if (picksFiles) renderPicks(picksFiles);
+  const picks = await findLatestPicks();
+  if (picks) renderPicks(picks);
+  else {
+    document.getElementById("picks-meta").textContent = "No picks file found";
+    document.getElementById("picks-body").innerHTML =
+      `<tr><td colspan="8" class="empty">No picks yet</td></tr>`;
+  }
 
   if (summary) renderCharts(summary);
 }
@@ -30,9 +41,8 @@ async function findLatestPicks() {
   const latest = await loadJSON(`${DATA}/latest_picks.json`);
   if (latest) return latest;
 
-  // Fallback: scan recent weeks if latest_picks.json missing
   for (const week of [22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]) {
-    for (const season of [2025, 2024]) {
+    for (const season of [2026, 2025, 2024]) {
       const path = `${DATA}/week_${season}_${String(week).padStart(2, "0")}_picks.json`;
       const data = await loadJSON(path);
       if (data) return data;
@@ -62,6 +72,22 @@ function renderSummary(s) {
 function renderPicks(data) {
   const tbody = document.getElementById("picks-body");
   const picks = data.picks || [];
+  const meta = document.getElementById("picks-meta");
+
+  const when = data.generated_at
+    ? new Date(data.generated_at).toLocaleString(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short",
+      })
+    : null;
+  meta.textContent = [
+    data.season != null && data.week != null ? `${data.season} · Week ${data.week}` : null,
+    `${picks.length} pick${picks.length === 1 ? "" : "s"}`,
+    data.min_ev != null ? `min EV ${(data.min_ev * 100).toFixed(0)}%` : null,
+    when ? `updated ${when}` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   if (!picks.length) {
     tbody.innerHTML = `<tr><td colspan="8" class="empty">No picks this week (no edge above threshold)</td></tr>`;
@@ -69,36 +95,59 @@ function renderPicks(data) {
   }
 
   tbody.innerHTML = picks
-    .map(
-      (p) => `
+    .map((p) => {
+      const ev = p.ev ?? p.edge;
+      const price = p.price > 0 ? `+${p.price}` : `${p.price}`;
+      const team = p.team ? `<span class="player-label-team">${p.team}</span>` : "";
+      return `
     <tr>
-      <td>${p.player}</td>
+      <td>
+        <span class="player-label">
+          <span class="player-label-name">${p.player}</span>
+          ${team}
+        </span>
+      </td>
       <td>${p.position}</td>
-      <td>${p.line}</td>
+      <td class="num">${p.line}</td>
       <td class="pick-${p.pick}">${p.pick.toUpperCase()}</td>
-      <td>${fmtEdge(p.edge)}</td>
-      <td>${p.model_mu}</td>
-      <td>${p.price > 0 ? "+" + p.price : p.price}</td>
+      <td class="num ${ev != null && ev >= 0 ? "ev-pos" : ""}">${fmtEV(ev)}</td>
+      <td class="num">${p.model_mu}</td>
+      <td class="num">${price}</td>
       <td>${p.matchup || ""}</td>
-    </tr>`
-    )
+    </tr>`;
+    })
     .join("");
+}
+
+function chartDefaults() {
+  return {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        ticks: { color: CHART_MUTED, maxRotation: 45, font: { size: 11 } },
+        grid: { color: CHART_GRID },
+        border: { color: CHART_GRID },
+      },
+      y: {
+        ticks: { color: CHART_MUTED, font: { size: 11 } },
+        grid: { color: CHART_GRID },
+        border: { color: CHART_GRID },
+      },
+    },
+  };
 }
 
 function renderCharts(summary) {
   const brierData = summary.cumulative_brier || [];
   const clvData = summary.cumulative_clv || [];
+  const defaults = chartDefaults();
 
-  const chartDefaults = {
-    responsive: true,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { ticks: { color: "#8899aa", maxRotation: 45 }, grid: { color: "#2d3a4d" } },
-      y: { ticks: { color: "#8899aa" }, grid: { color: "#2d3a4d" } },
-    },
-  };
-
-  if (brierData.length) {
+  if (!brierData.length) {
+    document.getElementById("brier-chart").hidden = true;
+    document.getElementById("brier-empty").hidden = false;
+  } else {
     new Chart(document.getElementById("brier-chart"), {
       type: "line",
       data: {
@@ -106,24 +155,32 @@ function renderCharts(summary) {
         datasets: [
           {
             data: brierData.map((d) => d.brier),
-            borderColor: "#3b82f6",
-            backgroundColor: "rgba(59,130,246,0.1)",
+            borderColor: CHART_ACCENT,
+            backgroundColor: "rgba(37, 99, 235, 0.08)",
             fill: true,
             tension: 0.3,
+            pointRadius: 3,
+            pointBackgroundColor: CHART_ACCENT,
           },
         ],
       },
       options: {
-        ...chartDefaults,
+        ...defaults,
         scales: {
-          ...chartDefaults.scales,
-          y: { ...chartDefaults.scales.y, title: { display: true, text: "Brier", color: "#8899aa" } },
+          ...defaults.scales,
+          y: {
+            ...defaults.scales.y,
+            title: { display: true, text: "Brier", color: CHART_MUTED, font: { size: 11 } },
+          },
         },
       },
     });
   }
 
-  if (clvData.length) {
+  if (!clvData.length) {
+    document.getElementById("clv-chart").hidden = true;
+    document.getElementById("clv-empty").hidden = false;
+  } else {
     new Chart(document.getElementById("clv-chart"), {
       type: "bar",
       data: {
@@ -131,15 +188,18 @@ function renderCharts(summary) {
         datasets: [
           {
             data: clvData.map((d) => d.clv),
-            backgroundColor: clvData.map((d) => (d.clv >= 0 ? "#22c55e" : "#ef4444")),
+            backgroundColor: clvData.map((d) => (d.clv >= 0 ? CHART_SUCCESS : CHART_DANGER)),
           },
         ],
       },
       options: {
-        ...chartDefaults,
+        ...defaults,
         scales: {
-          ...chartDefaults.scales,
-          y: { ...chartDefaults.scales.y, title: { display: true, text: "CLV (line)", color: "#8899aa" } },
+          ...defaults.scales,
+          y: {
+            ...defaults.scales.y,
+            title: { display: true, text: "CLV (line)", color: CHART_MUTED, font: { size: 11 } },
+          },
         },
       },
     });

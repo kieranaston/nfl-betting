@@ -3,72 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NFL Reception Props</title>
+  <meta name="color-scheme" content="light">
+  <title>Reception Props</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 </head>
 <body>
-  <header>
-    <h1>NFL WR/TE Reception Props</h1>
-    <p class="subtitle">Automated model picks &amp; season tracking</p>
-  </header>
+  <nav class="site-nav" aria-label="Primary">
+    <a href="index.html" class="site-brand">Reception Props</a>
+    <div class="site-nav-links">
+      <a href="index.html" class="is-active" aria-current="page">Dashboard</a>
+    </div>
+  </nav>
 
-  <section class="stats-grid" id="stats-grid">
-    <div class="stat-card">
-      <span class="stat-label">Record</span>
-      <span class="stat-value" id="record">—</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-label">Win %</span>
-      <span class="stat-value" id="win-pct">—</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-label">Avg Brier</span>
-      <span class="stat-value" id="avg-brier">—</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-label">Avg CLV</span>
-      <span class="stat-value" id="avg-clv">—</span>
-    </div>
-  </section>
+  <main class="site-main">
+    <div class="container">
+      <header class="page-hero">
+        <h1 class="page-title">WR/TE reception props</h1>
+        <p class="page-subtitle">Model picks, +EV filter, and season tracking</p>
+      </header>
+      <p class="meta" id="picks-meta">Loading picks…</p>
 
-  <section class="charts">
-    <div class="chart-container">
-      <h2>Brier Score by Week</h2>
-      <canvas id="brier-chart"></canvas>
-    </div>
-    <div class="chart-container">
-      <h2>CLV by Week</h2>
-      <canvas id="clv-chart"></canvas>
-    </div>
-  </section>
+      <section class="section" aria-label="Season summary">
+        <h2 class="section-title">Season</h2>
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Record</span>
+            <span class="stat-value" id="record">—</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Win %</span>
+            <span class="stat-value" id="win-pct">—</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Avg Brier</span>
+            <span class="stat-value" id="avg-brier">—</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Avg CLV</span>
+            <span class="stat-value" id="avg-clv">—</span>
+          </div>
+        </div>
+      </section>
 
-  <section>
-    <h2>Latest Picks</h2>
-    <div class="table-wrap">
-      <table id="picks-table">
-        <thead>
-          <tr>
-            <th>Player</th>
-            <th>Pos</th>
-            <th>Line</th>
-            <th>Pick</th>
-            <th>Edge</th>
-            <th>Model μ</th>
-            <th>Price</th>
-            <th>Matchup</th>
-          </tr>
-        </thead>
-        <tbody id="picks-body">
-          <tr><td colspan="8" class="empty">Loading…</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+      <section class="section" aria-label="Calibration charts">
+        <div class="charts">
+          <div class="chart-panel">
+            <h2 class="section-title">Brier by week</h2>
+            <canvas id="brier-chart"></canvas>
+            <p class="chart-empty" id="brier-empty" hidden>No graded weeks yet</p>
+          </div>
+          <div class="chart-panel">
+            <h2 class="section-title">CLV by week</h2>
+            <canvas id="clv-chart"></canvas>
+            <p class="chart-empty" id="clv-empty" hidden>No graded weeks yet</p>
+          </div>
+        </div>
+      </section>
 
-  <footer>
-    <p>Model: negative binomial GLM · Odds: The Odds API · Data: nflverse</p>
-  </footer>
+      <section class="section" aria-label="Latest picks">
+        <h2 class="section-title">Latest picks</h2>
+        <div class="table-wrap">
+          <table class="picks-table" id="picks-table">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Pos</th>
+                <th class="num">Line</th>
+                <th>Pick</th>
+                <th class="num">+EV</th>
+                <th class="num">Model μ</th>
+                <th class="num">Price</th>
+                <th>Matchup</th>
+              </tr>
+            </thead>
+            <tbody id="picks-body">
+              <tr><td colspan="8" class="empty">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <p>Negative binomial GLM · The Odds API · nflverse</p>
+      </footer>
+    </div>
+  </main>
 
   <script src="app.js"></script>
 </body>
