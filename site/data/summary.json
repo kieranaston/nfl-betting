@@ -1,0 +1,10 @@
+{
+  "total_wins": 0,
+  "total_losses": 0,
+  "total_pushes": 0,
+  "win_pct": null,
+  "cumulative_brier": [],
+  "cumulative_clv": [],
+  "weekly": [],
+  "updated_at": null
+}
