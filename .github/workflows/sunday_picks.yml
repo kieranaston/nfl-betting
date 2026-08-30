@@ -2,8 +2,8 @@ name: Sunday Picks
 
 on:
   schedule:
-    # Sun 11:00 ET (15:00 UTC during EDT, 16:00 UTC during EST)
-    - cron: "0 15 * * 0"
+    # Sun 11:45 AM ET — 15:45 UTC (EDT) / 16:45 UTC (EST)
+    - cron: "45 15 * * 0"
   workflow_dispatch:
 
 permissions:

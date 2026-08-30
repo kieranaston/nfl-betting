@@ -14,8 +14,9 @@ SITE_DIR = ROOT / "site"
 
 POSITIONS = ("WR", "TE")
 MIN_AVG_TARGETS = 5.0
-MIN_EDGE = 0.03  # 3% edge vs implied probability
+MIN_EV = 0.04  # minimum +EV per $1 staked (4%; range 3-5%)
 TRAINING_SEASONS = [2022, 2023, 2024, 2025]
+SEASON_INDEX_BASE = TRAINING_SEASONS[0]  # season_idx = season - base (continuous year)
 
 ODDS_API_BASE = "https://api.the-odds-api.com/v4"
 ODDS_SPORT = "americanfootball_nfl"

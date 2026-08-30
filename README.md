@@ -17,7 +17,7 @@ Automated system that predicts NFL WR/TE reception O/U props, publishes picks be
 
 - Receptions O/U only
 - WR/TE averaging 5+ targets/game
-- Minimum 3% edge vs implied probability to publish a pick
+- Minimum 4% +EV per $1 staked (accounts for vig via posted American odds)
 
 ## Repo Layout
 
@@ -56,7 +56,7 @@ Two scheduled GitHub Actions jobs keep the system running and prevent workflow i
 | Job | Schedule | Actions |
 |-----|----------|---------|
 | **Weekly Train** | Tue 10:00 ET | Grade last week → pull data → retrain → update results |
-| **Sunday Picks** | Sun 11:00 ET | Pull odds → generate picks → log closing-line snapshot |
+| **Sunday Picks** | Sun 11:45 ET | Pull odds → generate +EV picks → log closing-line snapshot |
 
 ### GitHub secrets
 
@@ -95,10 +95,14 @@ git push
 Negative binomial GLM predicting weekly receptions:
 
 ```
-receptions ~ targets_l5 + receptions_l5 + snap_pct + position_te + home + season
+receptions ~ targets_l5 + receptions_l5 + snap_pct + position_te + home
+           + team_spread + total_line + opp_pass_funnel_rank + wind + outdoor
+           + season_idx
 ```
 
-For each prop line, the model computes P(over) and P(under) and compares against book-implied probabilities. Picks require ≥3% edge.
+`season_idx` is a continuous year index (`season - 2022`), so 2026 predicts as `4` with no unseen-category crash and no forced 2022 baseline.
+
+For each prop line, the model computes P(over)/P(under). Picks require **≥4% +EV** vs posted American odds.
 
 ## Tracking
 
