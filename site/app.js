@@ -7,9 +7,14 @@ const CHART_SUCCESS = "#059669";
 const CHART_DANGER = "#dc2626";
 
 async function loadJSON(path) {
-  const res = await fetch(path);
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    const res = await fetch(path);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (err) {
+    console.error(`Failed to load ${path}`, err);
+    return null;
+  }
 }
 
 function fmtPct(v) {

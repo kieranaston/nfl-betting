@@ -1,6 +1,7 @@
 """Generate weekly reception prop picks from model + odds."""
 
 import json
+import math
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,6 +21,34 @@ from features import (
 from odds_api import consensus_lines, fetch_all_reception_props
 from pull_data import pull_raw_data
 from train import load_model
+
+
+def json_safe(value):
+    """Convert pandas/numpy NA and non-finite floats to JSON-safe None."""
+    if value is None:
+        return None
+    try:
+        if pd.isna(value):
+            return None
+    except (TypeError, ValueError):
+        pass
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    if hasattr(value, "item"):
+        try:
+            return json_safe(value.item())
+        except (ValueError, AttributeError):
+            pass
+    return value
+
+
+def sanitize(obj):
+    """Recursively make a structure JSON-serializable for browsers (no NaN)."""
+    if isinstance(obj, dict):
+        return {k: sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [sanitize(v) for v in obj]
+    return json_safe(obj)
 
 
 def current_nfl_week(schedules: pd.DataFrame) -> tuple[int, int]:
@@ -108,19 +137,19 @@ def generate_picks(season: int, week: int) -> dict:
             "player": player_name,
             "player_id": row["player_id"],
             "position": row["position"],
-            "team": row.get("team", ""),
-            "opponent": row.get("opponent", ""),
+            "team": json_safe(row.get("team")) or "",
+            "opponent": json_safe(row.get("opponent")) or "",
             "line": line,
             "model_mu": round(mu, 2),
             "p_over": round(p_over, 4),
             "p_under": round(p_under, 4),
             "over_price": over_price,
             "under_price": under_price,
-            "team_spread": row.get("team_spread"),
-            "total_line": row.get("total_line"),
-            "opp_pass_funnel_rank": row.get("opp_pass_funnel_rank"),
-            "wind": row.get("wind"),
-            "outdoor": row.get("outdoor"),
+            "team_spread": json_safe(row.get("team_spread")),
+            "total_line": json_safe(row.get("total_line")),
+            "opp_pass_funnel_rank": json_safe(row.get("opp_pass_funnel_rank")),
+            "wind": json_safe(row.get("wind")),
+            "outdoor": json_safe(row.get("outdoor")),
             "event_id": market["event_id"],
             "matchup": f"{market['away_team']} @ {market['home_team']}",
             "commence_time": market["commence_time"],
@@ -155,11 +184,12 @@ def generate_picks(season: int, week: int) -> dict:
     picks_path = PREDICTIONS_DIR / f"week_{season}_{week:02d}_picks.json"
     snapshot_path = PREDICTIONS_DIR / f"week_{season}_{week:02d}_odds_snapshot.json"
 
-    picks_path.write_text(json.dumps(output, indent=2))
+    picks_path.write_text(json.dumps(sanitize(output), indent=2, allow_nan=False))
     snapshot_path.write_text(
         json.dumps(
-            {"season": season, "week": week, "snapshot_at": generated_at, "props": snapshot},
+            sanitize({"season": season, "week": week, "snapshot_at": generated_at, "props": snapshot}),
             indent=2,
+            allow_nan=False,
         )
     )
 
