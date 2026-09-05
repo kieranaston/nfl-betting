@@ -1,4 +1,9 @@
-"""Generate weekly reception prop picks from model + odds."""
+"""Generate weekly reception prop picks from model + odds.
+
+Merges into the week ledger: events in the current Odds API pull overwrite;
+picks for other games (already kicked off / not in this pull) are kept.
+Board ranking uses model confidence vs the line (no prices).
+"""
 
 import json
 import math
@@ -10,10 +15,8 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from config import MIN_EV, MODEL_FILE, PREDICTIONS_DIR
+from config import MIN_SIDE_PROB, MODEL_FILE, PREDICTIONS_DIR
 from features import (
-    american_to_implied_prob,
-    expected_value,
     latest_player_features,
     model_feature_row,
     nb_over_prob,
@@ -61,7 +64,6 @@ def current_nfl_week(schedules: pd.DataFrame) -> tuple[int, int]:
         row = upcoming.sort_values("gameday").iloc[0]
         return int(row["season"]), int(row["week"])
 
-    # Offseason / schedule not published yet: next REG week after last completed REG game
     reg = sched[sched["game_type"] == "REG"].sort_values("gameday")
     past = reg[reg["gameday"] < now]
     if past.empty:
@@ -78,23 +80,37 @@ def normalize_name(name: str) -> str:
     return name.lower().strip().replace(".", "").replace("'", "")
 
 
-def best_ev_side(p_over: float, p_under: float, over_price, under_price) -> tuple[str | None, float | None, float | None, float | None, int | None]:
-    """Return best +EV side (side, model_prob, market_prob, ev, price) if above MIN_EV."""
-    best = None
+def best_model_side(p_over: float, p_under: float) -> tuple[str | None, float | None, float | None]:
+    """
+    Prefer the higher-probability side vs the line. Filter by MIN_SIDE_PROB.
+    Returns (side, model_prob, edge_vs_coin) where edge_vs_coin = model_prob - 0.5.
+    """
+    if p_over >= p_under:
+        side, prob = "over", p_over
+    else:
+        side, prob = "under", p_under
+    if prob < MIN_SIDE_PROB:
+        return None, None, None
+    return side, prob, prob - 0.5
 
-    if over_price is not None:
-        ev_over = expected_value(p_over, over_price)
-        if ev_over >= MIN_EV and (best is None or ev_over > best[3]):
-            best = ("over", p_over, american_to_implied_prob(over_price), ev_over, over_price)
 
-    if under_price is not None:
-        ev_under = expected_value(p_under, under_price)
-        if ev_under >= MIN_EV and (best is None or ev_under > best[3]):
-            best = ("under", p_under, american_to_implied_prob(under_price), ev_under, under_price)
+def load_week_list(path: Path, season: int, week: int, key: str) -> list:
+    """Load a list field from an existing week JSON if season/week match."""
+    if not path.exists():
+        return []
+    try:
+        data = json.loads(path.read_text())
+    except (json.JSONDecodeError, OSError):
+        return []
+    if data.get("season") != season or data.get("week") != week:
+        return []
+    return data.get(key) or []
 
-    if best is None:
-        return None, None, None, None, None
-    return best
+
+def merge_by_event(prior: list, fresh: list, refreshed_events: set[str]) -> list:
+    """Keep prior rows for events not in this pull; append fresh rows for refreshed events."""
+    kept = [row for row in prior if str(row.get("event_id") or "") not in refreshed_events]
+    return kept + fresh
 
 
 def generate_picks(season: int, week: int, raw: dict | None = None) -> dict:
@@ -106,48 +122,50 @@ def generate_picks(season: int, week: int, raw: dict | None = None) -> dict:
     if raw is None:
         raw = load_raw_data()
     features = latest_player_features(raw["stats"], raw["snaps"], raw["schedules"], season, week)
+    consensus = consensus_lines(fetch_all_reception_props())
 
-    props_raw = fetch_all_reception_props()
-    consensus = consensus_lines(props_raw)
-
-    picks = []
-    snapshot = []
-
+    matched: list[tuple[pd.Series, dict]] = []
     for _, row in features.iterrows():
-        player_name = row["player_display_name"]
-        key = normalize_name(player_name)
+        key = normalize_name(row["player_display_name"])
         if key not in consensus:
             continue
+        matched.append((row, consensus[key]))
 
-        market = consensus[key]
+    picks: list[dict] = []
+    snapshot: list[dict] = []
+    if not matched:
+        mus = []
+    else:
+        feature_frame = pd.DataFrame([model_feature_row(row, season) for row, _ in matched])
+        mus = [float(x) for x in model.predict(feature_frame)]
+
+    for (row, market), mu in zip(matched, mus):
         line = float(market["line"])
-
-        pred = model.predict(pd.DataFrame([model_feature_row(row, season)]))[0]
-        mu = float(pred)
         p_over = nb_over_prob(mu, alpha, line)
         p_under = 1.0 - p_over
+        pick_side, model_prob, edge = best_model_side(p_over, p_under)
 
         over_price = market.get("over_price")
         under_price = market.get("under_price")
-
-        pick_side, model_prob, market_prob, ev, price = best_ev_side(
-            p_over, p_under, over_price, under_price
-        )
-
-        price_book = None
-        price_book_title = None
-        price_link = None
         if pick_side == "over":
-            price_book = market.get("over_book")
-            price_book_title = market.get("over_book_title")
-            price_link = market.get("over_link")
+            price, price_book, price_book_title, price_link = (
+                over_price,
+                market.get("over_book"),
+                market.get("over_book_title"),
+                market.get("over_link"),
+            )
         elif pick_side == "under":
-            price_book = market.get("under_book")
-            price_book_title = market.get("under_book_title")
-            price_link = market.get("under_link")
+            price, price_book, price_book_title, price_link = (
+                under_price,
+                market.get("under_book"),
+                market.get("under_book_title"),
+                market.get("under_link"),
+            )
+        else:
+            price = price_book = price_book_title = price_link = None
 
         prop_record = {
-            "player": player_name,
+            "player": row["player_display_name"],
             "player_id": row["player_id"],
             "position": row["position"],
             "team": json_safe(row.get("team")) or "",
@@ -157,6 +175,7 @@ def generate_picks(season: int, week: int, raw: dict | None = None) -> dict:
             "line_book_title": market.get("line_book_title"),
             "line_link": market.get("line_link"),
             "model_mu": round(mu, 2),
+            "mu_gap": round(mu - line, 2),
             "p_over": round(p_over, 4),
             "p_under": round(p_under, 4),
             "over_price": over_price,
@@ -186,9 +205,7 @@ def generate_picks(season: int, week: int, raw: dict | None = None) -> dict:
                     **prop_record,
                     "pick": pick_side,
                     "model_prob": round(model_prob, 4),
-                    "market_prob": round(market_prob, 4),
-                    "ev": round(ev, 4),
-                    "edge": round(model_prob - market_prob, 4),
+                    "edge": round(edge, 4),
                     "price": price,
                     "price_book": price_book,
                     "price_book_title": price_book_title,
@@ -197,30 +214,55 @@ def generate_picks(season: int, week: int, raw: dict | None = None) -> dict:
             )
 
     generated_at = datetime.now(timezone.utc).isoformat()
-    output = {
-        "season": season,
-        "week": week,
-        "generated_at": generated_at,
-        "min_ev": MIN_EV,
-        "picks": sorted(picks, key=lambda x: -x["ev"]),
-        "n_picks": len(picks),
-        "n_props": len(snapshot),
-    }
+    refreshed_events = {str(p["event_id"]) for p in snapshot if p.get("event_id")}
 
     PREDICTIONS_DIR.mkdir(parents=True, exist_ok=True)
     picks_path = PREDICTIONS_DIR / f"week_{season}_{week:02d}_picks.json"
     snapshot_path = PREDICTIONS_DIR / f"week_{season}_{week:02d}_odds_snapshot.json"
 
+    prior_picks = load_week_list(picks_path, season, week, "picks")
+    prior_props = load_week_list(snapshot_path, season, week, "props")
+    merged_picks = merge_by_event(prior_picks, picks, refreshed_events)
+    merged_props = merge_by_event(prior_props, snapshot, refreshed_events)
+    kept_picks = len(merged_picks) - len(picks)
+
+    output = {
+        "season": season,
+        "week": week,
+        "generated_at": generated_at,
+        "min_side_prob": MIN_SIDE_PROB,
+        "picks": sorted(
+            merged_picks,
+            key=lambda x: (-(x.get("model_prob") or 0), x.get("commence_time") or ""),
+        ),
+        "n_picks": len(merged_picks),
+        "n_props": len(merged_props),
+        "n_picks_this_refresh": len(picks),
+        "n_events_refreshed": len(refreshed_events),
+    }
+
     picks_path.write_text(json.dumps(sanitize(output), indent=2, allow_nan=False))
     snapshot_path.write_text(
         json.dumps(
-            sanitize({"season": season, "week": week, "snapshot_at": generated_at, "props": snapshot}),
+            sanitize(
+                {
+                    "season": season,
+                    "week": week,
+                    "snapshot_at": generated_at,
+                    "props": merged_props,
+                    "n_events_refreshed": len(refreshed_events),
+                }
+            ),
             indent=2,
             allow_nan=False,
         )
     )
 
-    print(f"Generated {len(picks)} picks from {len(snapshot)} props (min EV {MIN_EV:.0%})")
+    print(
+        f"Refresh: {len(picks)} new picks / {len(snapshot)} props across {len(refreshed_events)} events; "
+        f"kept {kept_picks} prior picks → {len(merged_picks)} week total "
+        f"(min side P {MIN_SIDE_PROB:.0%})"
+    )
     print(f"Saved -> {picks_path}")
     return output
 

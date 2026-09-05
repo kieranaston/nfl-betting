@@ -15,27 +15,6 @@ def _rolling_mean(series: pd.Series, window: int) -> pd.Series:
     return series.shift(1).rolling(window, min_periods=1).mean()
 
 
-def american_to_decimal(american: int | float) -> float:
-    """Convert American odds to decimal payout (includes stake)."""
-    if american >= 0:
-        return 1 + american / 100
-    return 1 + 100 / abs(american)
-
-
-def american_to_implied_prob(american: int | float) -> float:
-    """Convert American odds to implied probability (includes vig)."""
-    return 1 / american_to_decimal(american)
-
-
-def expected_value(model_prob: float, american: int | float) -> float:
-    """
-    +EV per $1 staked (decimal ROI).
-    Uses posted American odds, so vig is reflected in the payout side.
-    Example: 0.05 means +5% expected return on each $1 bet.
-    """
-    return model_prob * american_to_decimal(american) - 1
-
-
 def build_defense_funnel(stats: pd.DataFrame) -> pd.DataFrame:
     """
     Rolling L5 WR/TE targets allowed per defense, ranked weekly.

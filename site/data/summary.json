@@ -1,24 +1,13 @@
 {
-  "total_wins": 0,
-  "total_losses": 0,
-  "total_pushes": 0,
-  "win_pct": null,
+  "mae": null,
+  "bias": null,
+  "brier": null,
+  "log_loss": null,
+  "n_scored": 0,
+  "cumulative_mae": [],
+  "cumulative_bias": [],
   "cumulative_brier": [],
-  "cumulative_clv": [
-    {
-      "week": "2026-W01",
-      "clv": 0.0
-    }
-  ],
-  "weekly": [
-    {
-      "season": 2026,
-      "week": 1,
-      "wins": 0,
-      "losses": 0,
-      "brier_score": null,
-      "avg_clv": 0.0
-    }
-  ],
-  "updated_at": "2026-09-01T17:31:54.374092+00:00"
+  "cumulative_log_loss": [],
+  "weekly": [],
+  "updated_at": null
 }

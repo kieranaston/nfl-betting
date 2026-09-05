@@ -20,7 +20,7 @@
     <div class="container">
       <header class="page-hero">
         <h1 class="page-title">WR/TE reception props</h1>
-        <p class="page-subtitle">Model picks, +EV filter, and season tracking</p>
+        <p class="page-subtitle">Model accuracy on the full prop slate</p>
       </header>
       <p class="meta" id="picks-meta">Loading picks…</p>
 
@@ -28,41 +28,41 @@
         <h2 class="section-title">Season</h2>
         <div class="stats-grid" id="stats-grid">
           <div class="stat-card">
-            <span class="stat-label">Record</span>
-            <span class="stat-value" id="record">—</span>
+            <span class="stat-label">MAE</span>
+            <span class="stat-value" id="mae">—</span>
           </div>
           <div class="stat-card">
-            <span class="stat-label">Win %</span>
-            <span class="stat-value" id="win-pct">—</span>
+            <span class="stat-label">Bias</span>
+            <span class="stat-value" id="bias">—</span>
           </div>
           <div class="stat-card">
-            <span class="stat-label">Avg Brier</span>
-            <span class="stat-value" id="avg-brier">—</span>
+            <span class="stat-label">Brier</span>
+            <span class="stat-value" id="brier">—</span>
           </div>
           <div class="stat-card">
-            <span class="stat-label">Avg CLV</span>
-            <span class="stat-value" id="avg-clv">—</span>
+            <span class="stat-label">Log loss</span>
+            <span class="stat-value" id="log-loss">—</span>
           </div>
         </div>
       </section>
 
-      <section class="section" aria-label="Calibration charts">
+      <section class="section" aria-label="Accuracy charts">
         <div class="charts">
+          <div class="chart-panel">
+            <h2 class="section-title">MAE by week</h2>
+            <canvas id="mae-chart"></canvas>
+            <p class="chart-empty" id="mae-empty" hidden>No graded weeks yet</p>
+          </div>
           <div class="chart-panel">
             <h2 class="section-title">Brier by week</h2>
             <canvas id="brier-chart"></canvas>
             <p class="chart-empty" id="brier-empty" hidden>No graded weeks yet</p>
           </div>
-          <div class="chart-panel">
-            <h2 class="section-title">CLV by week</h2>
-            <canvas id="clv-chart"></canvas>
-            <p class="chart-empty" id="clv-empty" hidden>No graded weeks yet</p>
-          </div>
         </div>
       </section>
 
-      <section class="section" aria-label="Latest picks">
-        <h2 class="section-title">Latest picks</h2>
+      <section class="section" aria-label="Upcoming picks">
+        <h2 class="section-title">Upcoming picks</h2>
         <div class="table-wrap">
           <table class="picks-table" id="picks-table">
             <thead>
@@ -72,7 +72,8 @@
                 <th class="num">Line</th>
                 <th>Line book</th>
                 <th>Pick</th>
-                <th class="num">+EV</th>
+                <th class="num">Model %</th>
+                <th class="num">μ − line</th>
                 <th class="num">Model μ</th>
                 <th class="num">Price</th>
                 <th>Price book</th>

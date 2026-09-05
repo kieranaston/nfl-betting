@@ -21,19 +21,25 @@ def sync() -> None:
         (dest / "summary.json").write_text(
             json.dumps(
                 {
-                    "total_wins": 0,
-                    "total_losses": 0,
-                    "total_pushes": 0,
-                    "win_pct": None,
+                    "mae": None,
+                    "bias": None,
+                    "brier": None,
+                    "log_loss": None,
+                    "n_scored": 0,
+                    "cumulative_mae": [],
+                    "cumulative_bias": [],
                     "cumulative_brier": [],
-                    "cumulative_clv": [],
+                    "cumulative_log_loss": [],
                     "weekly": [],
                 },
                 indent=2,
             )
         )
 
-    picks_files = sorted(PREDICTIONS_DIR.glob("week_*_picks.json"))
+    picks_files = sorted(
+        PREDICTIONS_DIR.glob("week_*_picks.json"),
+        key=lambda p: _week_file_key(p),
+    )
     for pf in picks_files[-4:]:  # keep last 4 weeks on dashboard
         shutil.copy(pf, dest / pf.name)
     if picks_files:
@@ -41,10 +47,19 @@ def sync() -> None:
 
     weekly_dir = RESULTS_DIR / "weekly"
     if weekly_dir.exists():
-        for wf in sorted(weekly_dir.glob("week_*.json")):
+        for wf in sorted(weekly_dir.glob("week_*.json"), key=_week_file_key):
             shutil.copy(wf, dest / wf.name)
 
     print(f"Synced site data -> {dest}")
+
+
+def _week_file_key(path: Path) -> tuple[int, int]:
+    """Sort week_YYYY_WW_*.json by season, week."""
+    parts = path.stem.split("_")
+    try:
+        return int(parts[1]), int(parts[2])
+    except (IndexError, ValueError):
+        return (0, 0)
 
 
 if __name__ == "__main__":

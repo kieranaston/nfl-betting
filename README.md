@@ -1,6 +1,6 @@
 # NFL Reception Props
 
-Automated system that predicts NFL WR/TE reception O/U props, publishes picks before each week's kickoffs, and tracks edge (CLV + calibration) against the closing line through the season.
+Automated system that predicts NFL WR/TE reception O/U props, refreshes picks as markets open through the week, and tracks model accuracy (MAE, bias, Brier, log loss) on the full prop slate.
 
 ## Stack
 
@@ -17,15 +17,17 @@ Automated system that predicts NFL WR/TE reception O/U props, publishes picks be
 
 - Receptions O/U only
 - WR/TE averaging 5+ targets/game
-- Minimum 4% +EV per $1 staked (accounts for vig via posted American odds)
+- Minimum model confidence **55%** on a side vs the line (board filter; prices not used for ranking)
+- Dashboard shows picks only for games kicking off within **48 hours**
+- Week ledger merges refreshes (upcoming events overwrite; earlier games kept)
 
 ## Repo Layout
 
 ```
 /data          nflreadpy pulls + training set
 /model         training script + saved model
-/predictions   weekly picks + closing-line snapshot
-/results       graded outcomes, running CLV + Brier score
+/predictions   weekly picks ledger + odds snapshot
+/results       graded accuracy metrics
 /site          static dashboard (index.html + Chart.js)
 /scripts       Python pipeline
 /.github/workflows
@@ -51,12 +53,14 @@ python scripts/sync_site_data.py             # copy JSON into site/data/
 
 ## Automation
 
-Two scheduled GitHub Actions jobs keep the system running and prevent workflow idle-disable (60-day rule):
-
 | Job | Schedule | Actions |
 |-----|----------|---------|
-| **Weekly Train** | Tue 10:00 ET | Grade last week → pull data → retrain → update results |
-| **Sunday Picks** | Sun 11:45 ET | Pull odds → generate +EV picks → log closing-line snapshot |
+| **Picks Refresh** | Wed 6:00 PM EST | Pull data → grade previous week → retrain → odds → merge week ledger → sync site |
+| **Picks Refresh** | Sat 7:00 PM EST | Odds → merge week ledger (overwrite upcoming; keep finished games) → sync site |
+
+Wednesday is the full cycle (pull last week’s games → evaluate → retrain → predict Thu/Fri slate). Saturday only refreshes predictions for the rest of the week. Manual dispatch defaults to the full Wednesday cycle; uncheck **full_cycle** for a refresh-only run.
+
+Grading uses the week's **odds snapshot** (every lined prop the model scored), not the board shortlist.
 
 ### GitHub secrets
 
@@ -102,13 +106,14 @@ receptions ~ targets_l5 + receptions_l5 + snap_pct + position_te + home
 
 `season_idx` is a continuous year index (`season - 2022`), so 2026 predicts as `4` with no unseen-category crash and no forced 2022 baseline.
 
-For each prop line, the model computes P(over)/P(under). Picks require **≥4% +EV** vs posted American odds.
+For each prop line, the model computes P(over)/P(under) from μ. The board lists the side the model prefers when that probability is **≥55%**, ranked by model confidence (not by price/+EV). Book prices/links are shown for convenience only.
 
 ## Tracking
 
-- **Brier score** — calibration of predicted probabilities vs outcomes
-- **CLV** — closing line value (line movement in pick direction; meaningful when lines move between snapshot and kickoff)
-- **Record** — win/loss on published picks
+All metrics are on the **full snapshot slate** (every prop with a model μ and line), not betting results:
+
+- **MAE / bias** — accuracy of predicted receptions (μ) vs actual; bias = mean(μ − actual)
+- **Brier / log loss** — quality of P(over) vs whether receptions cleared the line (pushes skipped; prices unused)
 
 ## License
 

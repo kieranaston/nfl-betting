@@ -1,0 +1,59 @@
+name: Picks Refresh
+
+on:
+  schedule:
+    # Wed 6:00 PM EST — pull, grade, retrain, refresh (23:00 UTC; 7:00 PM EDT)
+    - cron: "0 23 * * 3"
+    # Sat 7:00 PM EST — refresh only (00:00 UTC Sun; 8:00 PM EDT Sat)
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+    inputs:
+      full_cycle:
+        description: "Pull + grade + retrain before refresh (default on; uncheck for refresh-only)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  picks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Pull data
+        if: ${{ (github.event_name == 'schedule' && github.event.schedule == '0 23 * * 3') || (github.event_name == 'workflow_dispatch' && inputs.full_cycle) }}
+        run: python scripts/pull_data.py
+
+      - name: Grade previous week
+        if: ${{ (github.event_name == 'schedule' && github.event.schedule == '0 23 * * 3') || (github.event_name == 'workflow_dispatch' && inputs.full_cycle) }}
+        run: python scripts/grade.py
+
+      - name: Retrain model
+        if: ${{ (github.event_name == 'schedule' && github.event.schedule == '0 23 * * 3') || (github.event_name == 'workflow_dispatch' && inputs.full_cycle) }}
+        run: python scripts/train.py
+
+      - name: Generate picks
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python scripts/predict.py
+
+      - name: Sync dashboard data
+        run: python scripts/sync_site_data.py
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add predictions/ results/ site/data/ data/ model/
+          git diff --staged --quiet || git commit -m "Picks: Wed cycle / Sat refresh [automated]"
+          git push
